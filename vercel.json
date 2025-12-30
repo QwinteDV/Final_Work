@@ -2,9 +2,6 @@
   "functions": {
     "api/**/*.php": {
       "runtime": "vercel-php@1.1.0"
-    },
-    "api/*.js": {
-      "runtime": "nodejs18.x"
     }
   }
 }
