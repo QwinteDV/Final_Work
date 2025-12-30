@@ -9,7 +9,7 @@
     "start": "vercel dev"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.2.1"
+    "openai": "^4.20.1"
   },
   "devDependencies": {
     "vercel": "^32.4.1"

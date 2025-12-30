@@ -1,6 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { OpenAI } from 'openai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const openai = new OpenAI({
+  apiKey: process.env.AIMLAPI_KEY,
+  baseURL: 'https://api.aimlapi.com/v1'
+});
 
 export const config = {
   runtime: 'edge',
@@ -24,22 +27,32 @@ export default async function handler(req) {
       });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.AIMLAPI_KEY) {
       return new Response(JSON.stringify({ 
-        error: 'Gemini API key not configured' 
+        error: 'AIML API key not configured' 
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
-    const result = await model.generateContent(
-      `Je bent een behulpzame AI assistent die antwoord geeft in het Nederlands. Wees kort en duidelijk. Gebruiker zegt: ${message}`
-    );
-    
-    const aiResponse = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'Je bent een behulpzame AI assistent die antwoord geeft in het Nederlands. Wees kort en duidelijk.'
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      max_tokens: 150,
+      temperature: 0.7,
+    });
+
+    const aiResponse = completion.choices[0].message.content;
 
     return new Response(JSON.stringify({ 
       response: aiResponse 
