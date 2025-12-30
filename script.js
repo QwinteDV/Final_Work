@@ -92,6 +92,9 @@ async function transcribeAudio(audioBlob) {
         const data = JSON.parse(responseText);
         result.textContent = data.text;
         
+        // Console log wat de user heeft gezegd
+        console.log('User zei:', data.text);
+        
         // Get AI response
         await getAIResponse(data.text);
         
