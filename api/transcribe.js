@@ -1,12 +1,3 @@
-import { Formidable } from 'formidable';
-import fs from 'fs';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -19,17 +10,16 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'AssemblyAI API key not configured' });
     }
 
-    // Parse form data
-    const form = formidable({});
-    const [fields, files] = await form.parse(req);
-    const audioFile = files.audio[0];
-    
-    if (!audioFile) {
-      return res.status(400).json({ error: 'No audio file provided' });
+    // Get the audio buffer directly from the request
+    const chunks = [];
+    for await (const chunk of req) {
+      chunks.push(chunk);
     }
+    const audioBuffer = Buffer.concat(chunks);
 
-    // Read audio file
-    const audioBuffer = fs.readFileSync(audioFile.filepath);
+    if (!audioBuffer || audioBuffer.length === 0) {
+      return res.status(400).json({ error: 'No audio data provided' });
+    }
 
     // Upload audio to AssemblyAI
     const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
