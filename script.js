@@ -40,7 +40,7 @@ if (!MediaRecorder) {
 async function startRecording() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
         audioChunks = [];
 
         mediaRecorder.ondataavailable = (event) => {
@@ -48,7 +48,7 @@ async function startRecording() {
         };
 
         mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm;codecs=opus' });
             await transcribeAudio(audioBlob);
         };
 
@@ -79,7 +79,10 @@ async function transcribeAudio(audioBlob) {
 
         const response = await fetch('/api/transcribe', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'audio/webm;codecs=opus'
+            },
+            body: audioBlob
         });
 
         const responseText = await response.text();

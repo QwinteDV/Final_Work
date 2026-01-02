@@ -10,6 +10,9 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'AssemblyAI API key not configured' });
     }
 
+    // Get content type from request headers
+    const contentType = req.headers['content-type'];
+    
     // Convert request to buffer using Node.js built-in methods
     const buffers = [];
     
@@ -28,11 +31,12 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'No audio data provided' });
     }
 
-    // Upload audio to AssemblyAI
+    // Upload audio to AssemblyAI with correct content type
     const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
       method: 'POST',
       headers: {
         'Authorization': assemblyApiKey,
+        'Content-Type': contentType || 'audio/webm'
       },
       body: audioBuffer
     });
