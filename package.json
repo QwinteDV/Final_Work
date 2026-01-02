@@ -2,6 +2,7 @@
   "name": "voice-recognition-ai",
   "version": "1.0.0",
   "description": "Voice recognition with AI integration",
+  "type": "module",
   "main": "index.html",
   "scripts": {
     "dev": "npx http-server -p 3000 --cors",
