@@ -55,8 +55,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Chat error:', error);
+    console.error('Error details:', error.toString());
     return res.status(500).json({ 
-      error: error.message || 'AI response failed'
+      error: error.message || 'AI response failed',
+      details: error.toString()
     });
   }
 }
