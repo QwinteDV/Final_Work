@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Groq API key not configured' });
     }
 
-    const model = process.env.GROQ_MODEL || 'qwen-2.5-7b-instruct';
+    const model = process.env.GROQ_MODEL || 'qwen2.5-7b-instruct';
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
